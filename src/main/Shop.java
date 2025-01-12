@@ -2,22 +2,21 @@ package main;
 
 import model.Product;
 import model.Sale;
+import model.Amount;
 
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Shop
 {
-    private double cash = 100.00; //Definimos el valor inicial de la caja
-    private ArrayList<Product> inventory = new ArrayList<>(); //Creamos un array list para los productos del inventario
-    private ArrayList<Sale> sales= new ArrayList<>(); //Creamos un array list para las ventas
+    private Amount cash = new Amount(100.00);
+    private ArrayList<Product> inventory = new ArrayList<>();
+    private ArrayList<Sale> sales = new ArrayList<>();
+    final static double TAX_RATE = 1.04;
 
-    final static double TAX_RATE = 1.04; //Definimos los impuestos del 4% para cada producto
-        
     public static void main(String[] args)
     {
         Shop shop = new Shop();
-
         shop.loadInventory();
 
         Scanner scanner = new Scanner(System.in);
@@ -26,8 +25,7 @@ public class Shop
 
         do
         {
-            System.out.println("\n");
-            System.out.println("===========================");
+            System.out.println("\n===========================");
             System.out.println("Menu principal miTienda.com");
             System.out.println("===========================");
             System.out.println("1) Contar caja");
@@ -44,53 +42,31 @@ public class Shop
 
             switch (opcion)
             {
-                case 1:
+                case 1 ->
                     shop.showCash();
-                    break;
-
-                case 2:
+                case 2 ->
                     shop.addProduct();
-                    break;
-
-                case 3:
+                case 3 ->
                     shop.addStock();
-                    break;
-
-                case 4:
+                case 4 ->
                     shop.setExpired();
-                    break;
-
-                case 5:
+                case 5 ->
                     shop.showInventory();
-                    break;
-
-                case 6:
+                case 6 ->
                     shop.sale();
-                    break;
-
-                case 7:
+                case 7 ->
                     shop.showSales();
-                    break;
-                    
-                case 8:
+                case 8 ->
                     shop.totalAmount();
-                    break;
-
-                case 10:
+                case 10 ->
                     exit = true;
-                    break;
-
-                default:
+                default ->
                     System.out.println("Opción no válida.");
-                    break;
             }
         }
         while (!exit);
     }
 
-    /**
-     * Cargamos unos productos iniciales en la tienda
-     */
     public void loadInventory()
     {
         inventory.add(new Product("Manzana", 10.00, true, 10));
@@ -99,17 +75,11 @@ public class Shop
         inventory.add(new Product("Fresa", 5.00, true, 20));
     }
 
-    /**
-     * Mostramos el dinero que hay en la caja
-     */
     private void showCash()
     {
-        System.out.println("Dinero actual: " + cash);
+        System.out.println("\nDinero actual: " + cash);
     }
 
-    /**
-     * Añadimos un producto nuevo
-     */
     public void addProduct()
     {
         Scanner scanner = new Scanner(System.in);
@@ -131,12 +101,9 @@ public class Shop
         int stock = scanner.nextInt();
 
         inventory.add(new Product(name, wholesalerPrice, true, stock));
-        System.out.println("Producto añadido con éxito.");
+        System.out.println("\nProducto añadido con éxito.");
     }
 
-    /**
-     * add stock for a specific product
-     */
     public void addStock()
     {
         Scanner scanner = new Scanner(System.in);
@@ -149,7 +116,7 @@ public class Shop
             System.out.print("Seleccione la cantidad a añadir: ");
             int stock = scanner.nextInt();
             product.setStock(product.getStock() + stock);
-            System.out.println("El stock del producto " + name + " ha sido actualizado a " + product.getStock());
+            System.out.println("\nEl stock del producto " + name + " ha sido actualizado a " + product.getStock());
         }
         else
         {
@@ -157,9 +124,6 @@ public class Shop
         }
     }
 
-    /**
-     * set a product as expired
-     */
     private void setExpired()
     {
         Scanner scanner = new Scanner(System.in);
@@ -171,7 +135,7 @@ public class Shop
         if (product != null)
         {
             product.expire();
-            System.out.println("El precio del producto " + name + " ha sido actualizado a " + product.getPublicPrice());
+            System.out.println("\nEl precio del producto " + name + " ha sido actualizado a " + product.getPublicPrice());
         }
         else
         {
@@ -179,21 +143,16 @@ public class Shop
         }
     }
 
-    /**
-     * show all inventory
-     */
     public void showInventory()
     {
         System.out.println("Contenido actual de la tienda:");
         for (Product product : inventory)
         {
-            System.out.println(product.getName() + "|" + product.getWholesalerPrice() + "|" + product.isAvailable() + "|" + product.getStock());
+            System.out.println(product.getName() + "|" + product.getWholesalerPrice() + "|"
+                    + product.isAvailable() + "|" + product.getStock());
         }
     }
 
-    /**
-     * make a sale of products to a client
-     */
     public void sale()
     {
         Scanner sc = new Scanner(System.in);
@@ -202,7 +161,6 @@ public class Shop
 
         double totalAmount = 0.0;
         ArrayList<Product> purchasedProducts = new ArrayList<>();
-
         String name = "";
         while (!name.equals("0"))
         {
@@ -217,7 +175,7 @@ public class Shop
 
             if (product != null && product.isAvailable() && product.getStock() > 0)
             {
-                totalAmount += product.getPublicPrice();
+                totalAmount += product.getPublicPrice().getValue();
                 product.setStock(product.getStock() - 1);
                 if (product.getStock() == 0)
                 {
@@ -233,15 +191,11 @@ public class Shop
         }
 
         totalAmount *= TAX_RATE;
-        cash += totalAmount;
-
+        cash.setValue(cash.getValue() + totalAmount);
         sales.add(new Sale(client, purchasedProducts.toArray(new Product[0]), totalAmount));
-        System.out.println("Venta realizada con éxito, total: " + totalAmount);
+        System.out.println("Venta realizada con éxito, total: " + new Amount(totalAmount));
     }
 
-    /**
-     * show all sales
-     */
     public void showSales()
     {
         if (sales.isEmpty())
@@ -254,27 +208,27 @@ public class Shop
         {
             System.out.println("Nombre del cliente: " + sale.getClient());
             System.out.print("Productos comprados: ");
-            for (int i = 0; i < sale.getProducts().length; i++)
+            for (Product product : sale.getProducts())
             {
-                System.out.print(sale.getProducts()[i].getName() + " ");
+                System.out.print(product.getName() + " ");
             }
-            System.out.println();
-            System.out.println("Precio: " + sale.getAmount());
+            System.out.println("\nPrecio: " + sale.getAmount());
         }
     }
-    
-        public void totalAmount()
+
+    public void totalAmount()
     {
+        double totalVentas = 0;
         if (sales.isEmpty())
         {
             System.out.println("No hay ventas registradas.");
             return;
         }
-        System.out.println("Lista de ventas:");
         for (Sale sale : sales)
         {
-
+            totalVentas += sale.getAmount().getValue();
         }
+        System.out.println("El total de dinero de las ventas es: " + new Amount(totalVentas));
     }
 
     public Product findProduct(String name)

@@ -4,16 +4,16 @@ import java.util.Arrays;
 
 public class Sale
 {
-    String client;
-    Product[] products;
-    double amount;
+    private String client;
+    private Product[] products;
+    private Amount amount;
 
     public Sale(String client, Product[] products, double amount)
     {
         super();
         this.client = client;
         this.products = products;
-        this.amount = amount;
+        this.amount = new Amount(amount);
     }
 
     public String getClient()
@@ -36,12 +36,12 @@ public class Sale
         this.products = products;
     }
 
-    public double getAmount()
+    public Amount getAmount()
     {
         return amount;
     }
 
-    public void setAmount(double amount)
+    public void setAmount(Amount amount)
     {
         this.amount = amount;
     }

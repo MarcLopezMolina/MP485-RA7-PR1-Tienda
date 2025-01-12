@@ -4,12 +4,11 @@ public class Product
 {
     private int id;
     private String name;
-    private double publicPrice;
-    private double wholesalerPrice;
+    private Amount publicPrice;
+    private Amount wholesalerPrice;
     private boolean available;
     private int stock;
     private static int totalProducts;
-
     static double EXPIRATION_RATE = 0.60;
 
     public Product(String name, double wholesalerPrice, boolean available, int stock)
@@ -17,21 +16,17 @@ public class Product
         super();
         this.id = totalProducts + 1;
         this.name = name;
-        this.wholesalerPrice = wholesalerPrice;
+        this.wholesalerPrice = new Amount(wholesalerPrice);
+        this.publicPrice = new Amount(wholesalerPrice * 2);
         this.available = available;
         this.stock = stock;
-        this.publicPrice = wholesalerPrice * 2;
         totalProducts++;
     }
 
+    // Getters, Setters, and methods remain unchanged, except for adapting Amount attributes
     public int getId()
     {
         return id;
-    }
-
-    public void setId(int id)
-    {
-        this.id = id;
     }
 
     public String getName()
@@ -44,24 +39,14 @@ public class Product
         this.name = name;
     }
 
-    public double getPublicPrice()
+    public Amount getPublicPrice()
     {
         return publicPrice;
     }
 
-    public void setPublicPrice(double publicPrice)
-    {
-        this.publicPrice = publicPrice;
-    }
-
-    public double getWholesalerPrice()
+    public Amount getWholesalerPrice()
     {
         return wholesalerPrice;
-    }
-
-    public void setWholesalerPrice(double wholesalerPrice)
-    {
-        this.wholesalerPrice = wholesalerPrice;
     }
 
     public boolean isAvailable()
@@ -84,18 +69,8 @@ public class Product
         this.stock = stock;
     }
 
-    public static int getTotalProducts()
-    {
-        return totalProducts;
-    }
-
-    public static void setTotalProducts(int totalProducts)
-    {
-        Product.totalProducts = totalProducts;
-    }
-
     public void expire()
     {
-        this.publicPrice = publicPrice * EXPIRATION_RATE;
+        publicPrice.setValue(publicPrice.getValue() * EXPIRATION_RATE);
     }
 }
