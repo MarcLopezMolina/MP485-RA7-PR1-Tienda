@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 public class Shop
 {
-    private Amount cash = new Amount(100.00);
+    private Amount cash = new Amount(100.00); 
     private ArrayList<Product> inventory = new ArrayList<>();
     private ArrayList<Sale> sales = new ArrayList<>();
     final static double TAX_RATE = 1.04;
