@@ -2,12 +2,14 @@ package model;
 
 public class Amount
 {
+    final private String CURRENCY = "$";
+    
     private double value;
-    private final String currency = "€";
+    
 
     public Amount(double value)
     {
-        this.value = value;
+        this.value = Math.round(value * 100.0) / 100.0;
     }
 
     public double getValue()
@@ -22,12 +24,12 @@ public class Amount
 
     public String getCurrency()
     {
-        return currency;
+        return CURRENCY;
     }
 
     @Override
     public String toString()
     {
-        return value + " " + currency;
+        return value + " " + CURRENCY;
     }
 }

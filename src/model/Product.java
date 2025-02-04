@@ -23,7 +23,6 @@ public class Product
         totalProducts++;
     }
 
-    // Getters, Setters, and methods remain unchanged, except for adapting Amount attributes
     public int getId()
     {
         return id;
