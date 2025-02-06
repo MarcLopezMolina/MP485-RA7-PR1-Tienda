@@ -250,7 +250,7 @@ public class Shop
         
         for (Sale sale : sales)
         {
-            System.out.println("Name of the customer: " + sale.getClient());
+            System.out.println("Name of the customer: " + sale.getClient().getName());
             System.out.print("Products purchased: ");
             for (Product product : sale.getProducts())
             {
